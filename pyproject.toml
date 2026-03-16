@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "boto3>=1.42.68",
+    "pydantic>=2.12.5",
+    "pytz>=2026.1.post1",
 ]
 
 [dependency-groups]
