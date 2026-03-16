@@ -1,4 +1,5 @@
 import json
+import logging
 import uuid
 
 import boto3
@@ -6,6 +7,9 @@ import boto3
 dynamodb = boto3.resource("dynamodb", endpoint_url="http://localstack:4566")
 
 table = dynamodb.Table("posts")
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def response(status, body):
@@ -62,27 +66,33 @@ def delete_post(post_id):
 
 def lambda_handler(event, _):
 
+    logger.debug(f"Received event:\n{json.dumps(event)}\n")
+
     method = event["httpMethod"]
     path = event["path"]
 
-    if method == "POST" and path == "/posts":
-        body = json.loads(event["body"])
-        return create_post(body)
+    try:
+        logger.debug(f"Processing request: {method} {path}")
+        if method == "POST" and path == "/posts":
+            body = json.loads(event["body"])
+            return create_post(body)
 
-    if method == "GET" and path == "/posts":
-        return get_posts()
+        if method == "GET" and path == "/posts":
+            return get_posts()
 
-    if method == "GET" and path.startswith("/posts/"):
-        post_id = path.split("/")[-1]
-        return get_post(post_id)
+        if method == "GET" and path.startswith("/posts/"):
+            post_id = path.split("/")[-1]
+            return get_post(post_id)
 
-    if method == "PUT" and path.startswith("/posts/"):
-        post_id = path.split("/")[-1]
-        body = json.loads(event["body"])
-        return update_post(post_id, body)
+        if method == "PUT" and path.startswith("/posts/"):
+            post_id = path.split("/")[-1]
+            body = json.loads(event["body"])
+            return update_post(post_id, body)
 
-    if method == "DELETE" and path.startswith("/posts/"):
-        post_id = path.split("/")[-1]
-        return delete_post(post_id)
+        if method == "DELETE" and path.startswith("/posts/"):
+            post_id = path.split("/")[-1]
+            return delete_post(post_id)
 
-    return response(404, {"message": "Route not found"})
+        return response(404, {"message": "Route not found"})
+    except Exception as e:
+        logger.error(f"Error logging request: {e}")
