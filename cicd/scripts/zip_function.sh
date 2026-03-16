@@ -1,14 +1,14 @@
 # generate a clean set of requirements and install them into a temporary directory
-rm -rf ./services/blog_api/package-temp
-mkdir -p ./services/blog_api/package-temp
+rm -rf ./services/blog_crud/package-temp
+mkdir -p ./services/blog_crud/package-temp
 
 # remove any existing archive so we start fresh (zip -r updates rather than replaces)
-rm -f ./services/blog_api/function.zip
+rm -f ./services/blog_crud/function.zip
 rm -f ./infra/lambda/function.zip
 
 uv export \
     --format requirements.txt \
-    --output-file ./services/blog_api/requirements.temp.txt \
+    --output-file ./services/blog_crud/requirements.temp.txt \
     --no-dev \
     --quiet \
     --no-hashes
@@ -22,14 +22,14 @@ uv export \
 # lambci/lambda:build-python3.12 is a community image that mirrors Lambda build envs
 
 docker run --rm --platform linux/amd64 \
-    -v "$PWD/services/blog_api/package-temp":/var/task \
-    -v "$PWD/services/blog_api/requirements.temp.txt":/tmp/requirements.txt \
+    -v "$PWD/services/blog_crud/package-temp":/var/task \
+    -v "$PWD/services/blog_crud/requirements.temp.txt":/tmp/requirements.txt \
     --entrypoint /bin/bash \
     public.ecr.aws/lambda/python:3.12 \
     -c "set -eux; pip install --upgrade -q pip setuptools wheel; pip install -q -r /tmp/requirements.txt -t /var/task"
 
 # copy our handler
-cp $PWD/services/blog_api/handler.py $PWD/services/blog_api/package-temp/
+cp $PWD/services/blog_crud/handler.py $PWD/services/blog_crud/package-temp/
 
 # create zip archive
-cd $PWD/services/blog_api/package-temp && zip -q -r ../function.zip . && cd ..
+cd $PWD/services/blog_crud/package-temp && zip -q -r ../function.zip . && cd ..
