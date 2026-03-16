@@ -3,6 +3,18 @@ revision = 3
 requires-python = ">=3.12"
 
 [[package]]
+name = "awscli-local"
+version = "0.22.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "localstack-client" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7a/71/591a30da6819c96deca2286f145d5982e73b11e7f657e8cbfc5e003ca73f/awscli_local-0.22.2.tar.gz", hash = "sha256:07c532c372753bf5f15426451dc91d6eec9de8779748049329a9a882bdac8a0b", size = 11695, upload-time = "2025-08-07T06:07:49.133Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/80/6cb86812f8418b0464fc3418e78826d8fc99342848fdb82e7f576add1c1f/awscli_local-0.22.2-py3-none-any.whl", hash = "sha256:1901ebef343ba8cbde06f9f6406b5415ef53e93296718c2c31c9d49b0b09bd9d", size = 12280, upload-time = "2025-08-07T06:07:47.624Z" },
+]
+
+[[package]]
 name = "blog-crud"
 version = "0.1.0"
 source = { virtual = "." }
@@ -10,8 +22,16 @@ dependencies = [
     { name = "boto3" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "awscli-local" },
+]
+
 [package.metadata]
 requires-dist = [{ name = "boto3", specifier = ">=1.42.68" }]
+
+[package.metadata.requires-dev]
+dev = [{ name = "awscli-local", specifier = ">=0.22.2" }]
 
 [[package]]
 name = "boto3"
@@ -49,6 +69,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/d3/59/322338183ecda247f
 wheels = [
     { url = "https://files.pythonhosted.org/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl", hash = "sha256:a5663118de4908c91729bea0acadca56526eb2698e83de10cd116ae0f4e97c64", size = 20419, upload-time = "2026-01-22T16:35:24.919Z" },
 ]
+
+[[package]]
+name = "localstack-client"
+version = "2.11"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "boto3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/44/79/d240524248f0e675982c52586d67ea5030cf7511af9dbc8814e1d100cd15/localstack_client-2.11.tar.gz", hash = "sha256:1cbd7bf1f03b9b553ffe7ea10fe137f44e8d690a37af9c6515eba61a2379fc46", size = 11225, upload-time = "2026-01-09T10:15:19.77Z" }
 
 [[package]]
 name = "python-dateutil"
