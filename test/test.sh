@@ -13,11 +13,11 @@ else
 fi
 
 echo "Testing DynamoDB table creation..."
-awslocal dynamodb list-tables | grep post > /dev/null
+awslocal dynamodb list-tables | grep posts > /dev/null
 if [[ $? -eq 0 ]]; then
-    echo "DynamoDB table 'post' exists."
+    echo "DynamoDB table 'posts' exists."
 else
-    echo "Error: DynamoDB table 'post' does not exist."
+    echo "Error: DynamoDB table 'posts' does not exist."
     exit 1
 fi
 
@@ -44,6 +44,7 @@ echo "All tests passed successfully. AWS infrastructure is set up correctly in L
 echo "Test Blog app"
 awslocal lambda invoke \
     --function-name blog_crud \
+    --cli-binary-format raw-in-base64-out \
     --payload '{
     "httpMethod":"POST",
     "path":"/posts",
@@ -51,7 +52,7 @@ awslocal lambda invoke \
     }' \
     response.json
 
-cat response.json | jq .id > /dev/null
+cat response.json
 if [[ $? -eq 0 ]]; then
     echo "Blog Service is working correctly."
 else
@@ -64,7 +65,7 @@ curl -X POST http://$API_ID.execute-api.localhost.localstack.cloud:4566/dev/post
     -H "Content-Type: application/json" \
     -d '{"title":"Mi segundo post","content":"Hola de nuevo"}' > response2.json
 
-cat response2.json | jq .id > /dev/null
+cat response2.json
 if [[ $? -eq 0 ]]; then
     echo "API Gateway is working correctly."
 else
@@ -72,20 +73,20 @@ else
     exit 1
 fi
 
-awslocal dynamodb scan --table-name post | jq .Items > /dev/null
+awslocal dynamodb scan --table-name posts | jq .Items
 if [[ $? -eq 0 ]]; then
-    echo "DynamoDB 'post' table is working correctly."
+    echo "DynamoDB 'posts' table is working correctly."
 else
-    echo "Error: DynamoDB 'post' table is not working correctly."
+    echo "Error: DynamoDB 'posts' table is not working correctly."
     exit 1
 fi
 
 echo "All tests for Blog app passed successfully."
 
-echo "Delete dummy data from DynamoDB table 'post'..."
-awslocal dynamodb scan --table-name post --query "Items[].id.S" \
+echo "Delete dummy data from DynamoDB table 'posts'..."
+awslocal dynamodb scan --table-name posts --query "Items[].id.S" \
     --output text | xargs -I {} awslocal dynamodb delete-item \
-    --table-name post \
+    --table-name posts \
     --key '{"id": {"S": "{}"}}'
 
-echo "Dummy data deleted successfully from DynamoDB table 'post'."
+echo "Dummy data deleted successfully from DynamoDB table 'posts'."
