@@ -15,7 +15,9 @@ def test_lambda_handler_post_posts():
     with patch("handler.table") as mock_table:
         mock_table.put_item.return_value = {}
 
-        event = make_event("POST", "/posts", {"title": "My Post", "content": "Hello World"})
+        event = make_event(
+            "POST", "/posts", {"title": "My Post", "content": "Hello World"}
+        )
         result = handler.lambda_handler(event, None)
 
         assert result["statusCode"] == 201
@@ -66,7 +68,11 @@ def test_lambda_handler_put_post():
     with patch("handler.table") as mock_table:
         mock_table.update_item.return_value = {}
 
-        event = make_event("PUT", "/posts/abc-123", {"title": "Updated Title", "content": "Updated Content"})
+        event = make_event(
+            "PUT",
+            "/posts/abc-123",
+            {"title": "Updated Title", "content": "Updated Content"},
+        )
         result = handler.lambda_handler(event, None)
 
         assert result["statusCode"] == 200
