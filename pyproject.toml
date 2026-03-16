@@ -11,4 +11,5 @@ dependencies = [
 [dependency-groups]
 dev = [
     "awscli-local>=0.22.2",
+    "pytest>=9.0.2",
 ]
