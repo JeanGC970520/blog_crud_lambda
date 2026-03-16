@@ -43,7 +43,7 @@ echo "All tests passed successfully. AWS infrastructure is set up correctly in L
 
 echo "Test Blog app"
 awslocal lambda invoke \
-    --function-name blog-api \
+    --function-name blog_crud \
     --payload '{
     "httpMethod":"POST",
     "path":"/posts",

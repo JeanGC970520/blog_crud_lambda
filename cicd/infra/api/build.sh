@@ -19,7 +19,7 @@ API_ID=$(awslocal apigateway create-rest-api \
 #
 # All resources and methods are created using the awslocal CLI, which interacts with LocalStack's emulated AWS services.
 # The script assumes that the environment variable $API_ID is set to the target API Gateway REST API ID.
-# The Lambda function ARN used for integration is "arn:aws:lambda:us-east-1:000000000:function:blog_api".
+# The Lambda function ARN used for integration is "arn:aws:lambda:us-east-1:000000000:function:blog_crud".
 
 # Create the "/posts" resource
 awslocal apigateway create-resource \
@@ -39,7 +39,7 @@ awslocal apigateway put-integration \
     --http-method POST \
     --type AWS_PROXY \
     --integration-http-method POST \
-    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_api/invocations"
+    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_crud/invocations"
 
 awslocal apigateway put-method \
     --rest-api-id $API_ID \
@@ -53,7 +53,7 @@ awslocal apigateway put-integration \
     --http-method GET \
     --type AWS_PROXY \
     --integration-http-method GET \
-    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_api/invocations"
+    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_crud/invocations"
 
 # Create the "/posts/{id}" resource
 awslocal apigateway create-resource \
@@ -73,7 +73,7 @@ awslocal apigateway put-integration \
     --http-method GET \
     --type AWS_PROXY \
     --integration-http-method GET \
-    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_api/invocations"
+    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_crud/invocations"
 
 awslocal apigateway put-method \
     --rest-api-id $API_ID \
@@ -87,7 +87,7 @@ awslocal apigateway put-integration \
     --http-method PUT \
     --type AWS_PROXY \
     --integration-http-method PUT \
-    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_api/invocations"
+    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_crud/invocations"
 
 awslocal apigateway put-method \
     --rest-api-id $API_ID \
@@ -101,7 +101,7 @@ awslocal apigateway put-integration \
     --http-method DELETE \
     --type AWS_PROXY \
     --integration-http-method DELETE \
-    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_api/invocations"
+    --uri "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:000000000:function:blog_crud/invocations"
 
 # Finally, we deploy the API to a stage named "dev" to make it accessible for testing and use.
 awslocal apigateway create-deployment \
