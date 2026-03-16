@@ -13,3 +13,4 @@ wheels/
 volume/
 *.zip
 *.temp*
+*temp/
