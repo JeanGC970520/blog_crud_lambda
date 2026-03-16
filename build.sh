@@ -46,6 +46,9 @@ else
     exit 1
 fi
 
+rm -rf "$EXECUTION_DIR/services/blog_crud/*.zip"
+rm -rf "$EXECUTION_DIR/services/blog_crud/*temp*"
+
 echo "Step 3: Building API Gateway resources..."
 if [[ -f "$INFRA_DIR/api/build.sh" ]]; then
     sh -x "$INFRA_DIR/api/build.sh"
