@@ -13,5 +13,10 @@ dependencies = [
 [dependency-groups]
 dev = [
     "awscli-local>=0.22.2",
+    "coverage>=7.13.5",
     "pytest>=9.0.2",
+    "pytest-cov>=7.1.0",
 ]
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report=term-missing"

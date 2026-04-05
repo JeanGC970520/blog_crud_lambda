@@ -48,7 +48,7 @@ awslocal lambda invoke \
     --payload '{
     "httpMethod":"POST",
     "path":"/posts",
-    "body":"{\"title\":\"Mi primer post\",\"content\":\"Hola mundo\"}"
+    "body":"{\"author\":\"Jean\",\"title\":\"Mi primer post\",\"tags\":[\"blog\",\"aws\"],\"image\":null,\"body\":[{\"type\":\"head\",\"value\":\"Introducción\"},{\"type\":\"para\",\"value\":\"Hola mundo\"}]}"
     }' \
     response.json
 
@@ -63,13 +63,13 @@ fi
 API_ID=$(awslocal apigateway get-rest-apis --query "items[?name=='blog-api'].id" --output text)
 curl -X POST http://$API_ID.execute-api.localhost.localstack.cloud:4566/dev/posts \
     -H "Content-Type: application/json" \
-    -d '{"title":"Mi segundo post","content":"Hola de nuevo"}' > response2.json
+    -d '{"author":"James","title":"Mi segundo post","tags":["blog","aws"],"image":null,"body":[{"type":"head","value":"Introducción2"},{"type":"para","value":"Hola mundo2"}]}' > response2.json
 
-cat response2.json
+cat response2.json | grep "author" > /dev/null
 if [[ $? -eq 0 ]]; then
     echo "API Gateway is working correctly."
 else
-    echo "Error: API Gateway is not working correctly."
+    echo "Error: API Gateway is not working correctly: $(cat response2.json)"
     exit 1
 fi
 
@@ -78,6 +78,18 @@ if [[ $? -eq 0 ]]; then
     echo "DynamoDB 'posts' table is working correctly."
 else
     echo "Error: DynamoDB 'posts' table is not working correctly."
+    exit 1
+fi
+
+awslocal dynamodb query \
+    --table-name posts \
+    --index-name author-index \
+    --key-condition-expression "author = :author" \
+    --expression-attribute-values '{":author":{"S":"Jean"}}' | jq .Items
+if [[ $? -eq 0 ]]; then
+    echo "DynamoDB 'author-index' is working correctly."
+else
+    echo "Error: DynamoDB 'author-index' is not working correctly."
     exit 1
 fi
 
