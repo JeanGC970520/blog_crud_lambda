@@ -62,18 +62,30 @@ def create_post(post: PostRequestModel):
     return response(201, post_response.model_dump())
 
 
-def get_posts() -> dict:
+def get_posts(author: str | None = None) -> dict:
 
-    # Implement pagination for large datasets
     items = []
-    result = table.scan(Limit=100)
+    query_params = (
+        {
+            "IndexName": "author-index",
+            "KeyConditionExpression": boto3.dynamodb.conditions.Key("author").eq(
+                author
+            ),
+        }
+        if author
+        else {"Limit": 100}
+    )
+    query_fn = table.query if author else table.scan
+
+    result = query_fn(**query_params)
     items.extend(result["Items"])
-    while True:
-        if not result["LastEvaluatedKey"]:
-            logger.debug("No more items to fetch, reached end of dataset.")
-            break
-        result = table.scan(Limit=100, ExclusiveStartKey=result.get("LastEvaluatedKey"))
+
+    while result.get("LastEvaluatedKey"):
+        query_params["ExclusiveStartKey"] = result["LastEvaluatedKey"]
+        result = query_fn(**query_params)
         items.extend(result["Items"])
+
+    logger.debug("Finished fetching all items from database.")
 
     return response(200, items)
 
@@ -127,6 +139,9 @@ def lambda_handler(event, _):
         return create_post(body)
 
     if method == "GET" and path == "/posts":
+        if "queryStringParameters" in event and event["queryStringParameters"]:
+            author = event["queryStringParameters"].get("author")
+            return get_posts(author)
         return get_posts()
 
     if method == "GET" and path.startswith("/posts/"):
