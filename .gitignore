@@ -16,3 +16,8 @@ volume/
 *temp/
 *.json
 *.log
+
+# Tests
+test_output/
+.coverage
+htmlcov/
