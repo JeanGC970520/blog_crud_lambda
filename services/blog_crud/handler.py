@@ -64,9 +64,18 @@ def create_post(post: PostRequestModel):
 
 def get_posts() -> dict:
 
-    result = table.scan()
+    # Implement pagination for large datasets
+    items = []
+    result = table.scan(Limit=100)
+    items.extend(result["Items"])
+    while True:
+        if not result["LastEvaluatedKey"]:
+            logger.debug("No more items to fetch, reached end of dataset.")
+            break
+        result = table.scan(Limit=100, ExclusiveStartKey=result.get("LastEvaluatedKey"))
+        items.extend(result["Items"])
 
-    return response(200, result["Items"])
+    return response(200, items)
 
 
 def get_post(post_id: str) -> dict:
